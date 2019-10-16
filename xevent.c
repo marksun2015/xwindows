@@ -186,10 +186,13 @@ int  main( int  argc,  char  *argv[])
                switch (an_event.xbutton.button){  
                case  Button1:  
                     XDrawRectangle(display, win, gc, 120, 150, 50, 60);       
-                    puts( "¹«¼Ð¥ªÁä«ö¤U" );  
+                    puts( "button1..." );  
                     break ;  
                case  Button2:       
                     puts( "button2..." );  
+                    break ;  
+               case  Button3:       
+                    puts( "button3..." );  
                     break ;  
                default :  
                     break ;  
