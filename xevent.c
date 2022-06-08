@@ -1,345 +1,193 @@
-/* 
-* Xlib ¾Ç²ß 
-* 
-* 
-* XEvent  
-* XMotion 
-* 
-* 
-* 
-* 
-* ½sÄ¶°ò©óXlibªºµ{§Ç»İ­n»PXlib®w³s±µ¡C¥i¥H¨Ï¥Î¤U­±ªº©R¥O¦æ¡G 
-  
-  cc prog.c -o prog -lX11 
-  
-  ¦pªG½sÄ¶¾¹³ø§i§ä¤£¨ìX11®w¡A¥i¥H¸ÕµÛ¥[¤W"-L"¼Ğ»x¡A¹³³o¼Ë¡G 
-  
-   cc prog.c -o prog -L/usr/X11/lib -lX11 
-  
-   ©ÎªÌ³o¼Ë¡]°w¹ï¨Ï¥ÎX11ªºª©¥»6¡^ 
-  
-   cc prog.c -o prog -L/usr/X11R6/lib -lX11 
-  
-   ¦bSunOs 4 ¨t²Î¤W¡AXªº®w³Q©ñ¨ì¤F/usr/openwin/lib 
-  
-   cc prog.c -o prog -L/usr/openwin/lib -lX11 
-* 
-* GC-¹Ï§Î¤W¤U¤å.[¹Ï§Î,¤å¥»µ¥, Ã¸»s,«e´º,­I´º,¨Ï¥Î¤°»òÃC¦â,¨Ï¥Î¤°»ò¦rÅéµ¥µ¥.] 
-* ¹ï¶H¥y¬`:¨Ò¦p: µ¡¤f,Ã¸¹Ï°Ï©M¥ú¼Ğ-¬ÛÀ³ªº¨ç¼Æ´N·|ªğ¦^¤@­Ó¥y¬`. 
-* ÄÀ©ñ¤º¦s: XFree() 
-* ¨Æ¥ó: XEvent,(Áp¦XÅé), XMotion, XButon. 
-* */  
-   
-/* 
-*      
-Display* display;    
-display = XOpenDisplay("simey:0"); 
-if (NULL == display){ 
-fprintf(stderr, "³s±µ¤£¤WX Server %s\n", "simey:0"); 
-exit(-1); 
-} 
-Ãö³¬XªA°È¾¹³s±µ 
-XCloseDisplay(display) 
-* */  
-   
-   
-   
-#include <stdio.h>  
-#include <stdlib.h>  
-#include <unistd.h>  
-#include <X11/keysymdef.h>  
-#include <X11/Xlib.h>  
-   
-int  main( int  argc,  char  *argv[])  
-{  
-       
-     Display* display;  
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+#include <X11/keysymdef.h>
+#include <X11/Xlib.h>
+
+int main(int argc, char *argv[])
+{
+
+     Display* display;
      display = XOpenDisplay( NULL);
-       
-     if  (NULL == display){  
-          fprintf(stderr,  "³s±µ¤£¤WX Server %s\n" ,  "simey:0" );  
-          exit(-1);  
-     }  
-     int  screen_num;  
-     int  screen_width;  
-     int  screen_height;  
-     Window root_window;  
-       
-     unsigned  long  white_pixel;  
-     unsigned  long  black_pixel;  
-       
-     screen_num = DefaultScreen(display);  
-       
-     screen_width = DisplayWidth(display, screen_num);  
-     screen_height = DisplayHeight(display, screen_num);  
-           
-     puts( "´ú¸Õ¿é¥X:" );  
-     printf( "¥y¬`:%x¼e«×:%d°ª«×:%d\n" ,  
-            screen_num, screen_width, screen_height);  
-           
-     root_window = RootWindow(display, screen_num);  
-     white_pixel = WhitePixel(display, screen_num);  
-     black_pixel = BlackPixel(display, screen_num);  
-       
-     Window win;  
-     int  win_width;  
-     int  win_height;  
-     int  win_x;  
-     int  win_y;       
-     int  win_border_width;  
-     int  win_border_height;  
-           
-     int  width;  
-     int  height;  
-       
-     win_x = win_y = win_border_width= win_border_height = 0;  
-     win_width = DisplayWidth(display, screen_num);  
-     win_height = DisplayHeight(display, screen_num);  
-       
-     width = (win_width / 3);  
-     height = (win_height / 3);  
-     win_border_width = 2;  
-       
-     /*³Ğ«Ø¤@­Óµ¡¤f*/       
-     win = XCreateSimpleWindow(  
-          display,  
-          RootWindow(display, screen_num),  
-          win_x, win_y,  
-          width, height,  
-          win_border_width, win_border_height,  
-          WhitePixel(display, screen_num)  
-          );  
-     /*µù¥U¨Æ¥ó*/  
-     /* XSelectInput(display, win, ExposureMask); */  
-     /*ExposureMask¦bÀY¤å¥ó"Xh"¤¤³Q©w¸q¡A¦pªG§Ú­Ì·Qµù¥U§ó¦hªº¨Æ¥óÃş«¬¡A§Ú­Ì¥i¥H¨Ï¥ÎÅŞ¿è"or"*/  
-       
-     XSelectInput(display, win,  
-                  ExposureMask | ButtonPressMask |  
-                  ButtonReleaseMask | ButtonPress |  
-                  ButtonRelease | EnterWindowMask |  
-                  LeaveWindowMask | EnterNotify |  
-                  LeaveNotify  
-          );  
-     /*¹«¼Ğªº¶i¤J©MÂ÷¶}Enter Leave©MGTK«Ü¹³.*/  
-       
-     XMapWindow(display, win);  
-       
-     /*µeµ§*/  
-     GC gc;  
-     XGCValues values;  
-     unsigned  long  valuemask = 0;  
-     /* XGCValues?? values?? = CapButt | JoinBevel; */  
-     /* unsigned long valuemask = GCCapStyle | GCJoinStyle; */  
-     gc = XCreateGC(display, win, valuemask, &values);  
-     XSync(display, False);  
-     if  (gc < 0)  
-     {  
-          fprintf(stderr,  "XCreateGC:\n" );  
-     }  
-     /*µeµe.*/  
-       
-     XSetBackground(display, gc, WhitePixel(display, screen_num)); /*³]¸m­I´ºÃC¦â*/  
-     XSetForeground(display, gc, BlackPixel(display, screen_num)); /*³]¸m«e´º¦â*/  
-     unsigned  int  line_width = 2;  
-     int  line_style = LineSolid;  
-     int  cap_style = CapButt;  
-     int  join_style = JoinBevel;  
-   
-     XSetLineAttributes(display, gc,  
-                        line_width, line_style, cap_style, join_style);  
-     XSetFillStyle(display, gc, FillSolid);  
-       
-   
-     /* sleep(14); */  
-     XEvent an_event;  
-     /*¨Æ¥ó´`Àô*/  
-     while  (1)  
-     {  
-          XNextEvent(display, &an_event);  
-          /*³o¸Ì´N¬O§PÂ_©Ò¦³¨Æ¥ó*/  
-   
-           
-          switch (an_event.type)  
-          {  
-                 
-          case  KeyPress:  
-               printf( "Áä½L³Q«ö¤U" );  
-               break ;  
-          case  Expose:  /*­«Ã¸*/  
-               if (an_event.xexpose.count > 0)       
-               {  
-                    break ;  
-               }  
-               XDrawLine(display, win, gc, 0, 100, 400, 100);  
-               XDrawPoint(display, win, gc, 5, 5);  
-               XDrawRectangle(display, win, gc, 120, 150, 50, 60);       
-               XFillRectangle(display, win, gc, 60, 150, 50, 60);  
-               /*¨ê·s*/  
-               XFlush(display);  
-               printf( "¥¿¦b­«Ã¸¨Æ¥ó\n" );  
-               break ;  
-          case  ButtonPress:  /*«ö¤U¨Æ¥ó*/  
-               /* int x; */  
-               /* int y; */  
-               /* x = an_event.xbutton.x; */  
-               /* y = an_event.xbutton.window; */                 
-               switch (an_event.xbutton.button){  
-               case  Button1:  
-                    XDrawRectangle(display, win, gc, 120, 150, 50, 60);       
-                    puts( "button1..." );  
-                    break ;  
-               case  Button2:       
-                    puts( "button2..." );  
-                    break ;  
-               case  Button3:       
-                    puts( "button3..." );  
-                    break ;  
-               default :  
-                    break ;  
-               }  
-          }                 
-           
-     }  
-     /*Ãö³¬XªA°È¾¹³s±µ*/  
-     XCloseDisplay(display);  
-     return  0;  
-}  
-   
-   
-/* 
-  Display* display 
-  «ü¦VÅã¥Üµ²ºcªº«ü°w 
-  Window parent 
-  ·sµ¡¤fªº¤÷µ¡¤fªºID¡C 
-  int x 
-  µ¡¤fªº¥ª¤WX§¤¼Ğ¡]³æ¦ì¬°«Ì¹õ¹³¯À¡^ 
-  int y 
-  µ¡¤fªº¥ª¤WY§¤¼Ğ¡]³æ¦ì¬°«Ì¹õ¹³¯À¡^ 
-  unsigned int width 
-  µ¡¤fªº¼e«×¡]³æ¦ì¬°«Ì¹õ¹³¯À¡^ 
-  unsigned int height 
-  µ¡¤fªº°ª«×¡]³æ¦ì¬°«Ì¹õ¹³¯À¡^ 
-  unsigned int border_width 
-  µ¡¤fªºÃä®Ø¼e«×¡]³æ¦ì¬°«Ì¹õ¹³¯À¡^ 
-  unsigned long border 
-  ¥Î¨ÓÃ¸»sµ¡¤fÃä®ØªºÃC¦â 
-  unsigned long background 
-  ¥Î¨ÓÃ¸»sµ¡¤f­I´ºªºÃC¦â 
-* */  
-   
-/* 
-  ¦b¨Æ¥óµ²ºc¸Ì¡A³q¹L"an_event.xbutton"¨ÓÀò±o¨Æ¥óªºÃş«¬¡A¥t¥~¥¦ÁÙ¥]¬A¤U­±³o¨Ç¦³½ìªº¤º®e¡G 
-  
-  Window window 
-  ¨Æ¥óµo°eªº¥Ø¼Ğµ¡¤fªºID¡]¦pªG§Ú­Ì¬°¦h­Óµ¡¤fµù¥U¤F¨Æ¥ó¡^ 
-  
-  int x, y 
-  ±qµ¡¤fªº¥ª¤W§¤¼Ğºâ°_¡A¹«¼ĞÁä«ö¤U®É¥ú¼Ğ¦bµ¡¤f¤¤ªº§¤¼Ğ 
-  
-  int button 
-  ¹«¼Ğ¤W¨º­Ó¼Ğ¸¹ªº«ö¶s³Q«ö¤U¤F¡A­È¥i¯à¬OButton1¡AButton2¡AButton3 
-  
-  Time time 
-  ¨Æ¥ó³Q©ñ¶i¶¤¦Cªº®É¶¡¡C¥i¥H³Q¥Î¨Ó¹ê²{ÂùÀ»ªº³B²z 
-* */  
-   
-   
-/* 
-  
-  ¹«¼Ğ¥ú¼Ğªº¶i¤J©MÂ÷¶}¨Æ¥ó 
-  
-  ¥t¤@­Óµ{§Ç³q±`·|·P¿³½ìªº¨Æ¥ó¬O¡A¦³Ãö¹«¼Ğ¥ú¼Ğ¶i¤J¤@­Óµ¡¤fªº»â°ì¥H¤ÎÂ÷¶}¨º­Óµ¡¤fªº»â°ìªº¨Æ¥ó¡C¦³¨Çµ{§Ç§Q¥Î¸Ó¨Æ¥ó¨Ó§i¶D¥Î¤áµ{§Ç²{¦b¦bµJÂI¸Ì­±¡C¬°¤Fµù¥U³oºØ¨Æ¥ó¡A§Ú­Ì±N·|¦b¨ç¼ÆXSelectInput()¸Ìµù¥U´X­Ó­±¨ã¡C 
-  
-  EnterWindowMask 
-  ³qª¾§Ú­Ì¹«¼Ğ¥ú¼Ğ¶i¤J¤F§Ú­Ìªºµ¡¤f¤¤ªº¥ô·N¤@­Ó 
-  
-  LeaveWindowMask 
-  ³qª¾§Ú­Ì¹«¼Ğ¥ú¼ĞÂ÷¶}¤F§Ú­Ìªºµ¡¤f¤¤ªº¥ô·N¤@­Ó 
-  
-  §Ú­Ìªº¨Æ¥ó´`Àô¤¤ªº¤À¤äÀË¬d±NÀË¬d¥H¤Uªº¨Æ¥óÃş«¬ 
-  
-  EnterNotify 
-  ¹«¼Ğ¥ú¼Ğ¶i¤J¤F§Ú­Ìªºµ¡¤f 
-  
-  LeaveNotify 
-  ¹«¼Ğ¥ú¼ĞÂ÷¶}¤F§Ú­Ìªºµ¡¤f 
-  
-  ³o¨Ç¨Æ¥óÃş«¬ªº¼Æ¾Úµ²ºc³q¹L¨Ò¦p"an_event.xcrossing"¨Ó³X°İ¡A¥¦ÁÙ¥]§t¥H¤U¦³½ìªº¦¨­ûÅÜ¶q¡G 
-  
-  Window window 
-  ¨Æ¥óµo°eªº¥Ø¼Ğµ¡¤fªºID¡]¦pªG§Ú­Ì¬°¦h­Óµ¡¤fµù¥U¤F¨Æ¥ó¡^ 
-  
-  Window subwindow 
-  ¦b¤@­Ó¶i¤J¨Æ¥ó¤¤¡A¥¦ªº·N«ä¬O±q¨º­Ó¤lµ¡¤f¶i¤J§Ú­Ìªºµ¡¤f¡A¦b¤@­ÓÂ÷¶}¨Æ¥ó¤¤¡A¥¦ªº·N«ä¬O¶i¤J¤F¨º­Ó¤lµ¡¤f¡A¦pªG¬O"none"¡A¥¦ªº·N«ä¬O±q¥~­±¶i¤J¤F§Ú­Ìªºµ¡¤f¡C 
-  
-  int x, y 
-  ±qµ¡¤fªº¥ª¤W§¤¼Ğºâ°_¡A¨Æ¥ó²£¥Í®É¹«¼Ğ¥ú¼Ğ¦bµ¡¤f¤¤ªº§¤¼Ğ 
-  
-  int mode 
-  ¹«¼Ğ¤W¨º­Ó¼Ğ¸¹ªº«ö¶s³Q«ö¤U¤F¡A­È¥i¯à¬OButton1¡AButton2¡AButton3 
-  
-  Time time 
-  ¨Æ¥ó³Q©ñ¶i¶¤¦Cªº®É¶¡¡C¥i¥H³Q¥Î¨Ó¹ê²{ÂùÀ»ªº³B²z 
-  
-  unsigned int state 
-  ³o­Ó¨Æ¥óµo¥Í®É¹«¼Ğ«ö¶s¡]©Î¬OÁä½LÁä¡^³Q«ö¤Uªº±¡ªp- ¦pªG¦³ªº¸Ü¡C³o­Ó¦¨­û¨Ï¥Î«ö¦ì©Îªº¤è¦¡¨Óªí¥Ü 
-  Button1Mask 
-  Button2Mask 
-  Button3Mask 
-  Button4Mask 
-  ShiftMask 
-  LockMask 
-  ControlMask 
-  Mod1Mask 
-  Mod2Mask 
-  Mod3Mask 
-  Mod4Mask 
-  
-  ¥¦­Ìªº¦W¦r¬O¥i¥HÂX®iªº¡A·í²Ä¤­­Ó¹«¼Ğ¶s³Q«ö¤U®É¡A³Ñ¤UªºÄİ©Ê´N«ü©ú¨ä¥¦¯S®íÁä¡]¨Ò¦pMod1¤@¯ë¬O"ALT"©ÎªÌ¬O"META"Áä¡^ 
-  
-  Bool focus 
-  ·í­È¬OTrueªº®É­Ô»¡©úµ¡¤fÀò±o¤FÁä½LµJÂI¡AFalse¤Ï¤§ 
-* */  
-   
-   
-/* 
-* Áä½LÁä«ö¤U©MÃP¶}¨Æ¥ó 
-¦pªG§Ú­Ìµ{§Ç±±¨îªºµ¡¤fÀò±o¤FÁä½LµJÂI¡A¥¦´N¥i¥H±µ¨ü«öÁäªº«ö¤U©MÃP¶}¨Æ¥ó¡C¬°¤Fµù¥U³o¨Ç¨Æ¥óªºÃş«¬¡A§Ú­Ì´N»İ­n³q¹L¨ç¼ÆXSelectInput()¨Óµù¥U¤U­±ªº­±¨ã¡C 
-  
-  
-KeyPressMask 
-³qª¾§Ú­Ìªºµ{§Ç¤°»ò®É­Ô«öÁä³Q«ö¤U¤F 
-  
-KeyPressMask 
-³qª¾§Ú­Ìªºµ{§Ç¤°»ò®É­Ô«öÁä³QÃP¶}¤F 
-  
-§Ú­Ìªº¨Æ¥ó´`Àô¤¤ªº¤À¤äÀË¬d±NÀË¬d¥H¤Uªº¨Æ¥óÃş«¬ 
-  
-Window window 
-¨Æ¥óµo°eªº¥Ø¼Ğµ¡¤fªºID¡]¦pªG§Ú­Ì¬°¦h­Óµ¡¤fµù¥U¤F¨Æ¥ó¡^ 
-  
-unsigned int keycode 
-³Q«ö¤U¡]©ÎÃP¶}¡^ªºÁäªº½s½X¡C³o¬O¤@¨ÇX¤º³¡½s½X¡AÀ³¸Ó³QÂ½Ä¶¦¨¤@­ÓÁä½LÁä²Å¸¹¤~¯à¤è«K¨Ï¥Î¡A±N·|¦b¤U­±¤¶²Ğ¡C 
-  
-int x, y 
-±qµ¡¤fªº¥ª¤W§¤¼Ğºâ°_¡A¨Æ¥ó²£¥Í®É¹«¼Ğ¥ú¼Ğ¦bµ¡¤f¤¤ªº§¤¼Ğ 
-  
-Time time 
-¨Æ¥ó³Q©ñ¶i¶¤¦Cªº®É¶¡¡C¥i¥H³Q¥Î¨Ó¹ê²{ÂùÀ»ªº³B²z 
-  
-unsigned int state 
-³o­Ó¨Æ¥óµo¥Í®É¹«¼Ğ«ö¶s¡]©Î¬OÁä½LÁä¡^³Q«ö¤Uªº±¡ªp- ¦pªG¦³ªº¸Ü¡C³o­Ó¦¨­û¨Ï¥Î«ö¦ì©Îªº¤è¦¡¨Óªí¥Ü 
-Button1Mask 
-Button2Mask 
-Button3Mask 
-Button4Mask 
-ShiftMask 
-LockMask 
-ControlMask 
-Mod1Mask 
-Mod2Mask 
-Mod3Mask 
-Mod4Mask 
-  
-¥¦­Ìªº¦W¦r¬O¥i¥HÂX®iªº¡A·í²Ä¤­­Ó¹«¼Ğ¶s³Q«ö¤U®É¡A³Ñ¤UªºÄİ©Ê´N«ü©ú¨ä¥¦¯S®íÁä¡]¨Ò¦pMod1¤@¯ë¬O"ALT"©ÎªÌ¬O"META"Áä¡^ */  
-   
+
+     if  (NULL == display){
+          fprintf(stderr,  "é€£æ¥ä¸ä¸ŠX Server %s\n" ,  "simey:0" );
+          exit(-1);
+     }
+     int  screen_num;
+     int  screen_width;
+     int  screen_height;
+     Window root_window;
+
+     unsigned  long  white_pixel;
+     unsigned  long  black_pixel;
+
+     screen_num = DefaultScreen(display);
+     screen_width = DisplayWidth(display, screen_num);
+     screen_height = DisplayHeight(display, screen_num);
+
+     puts( "test output:" );
+     printf( "fd:%x, width:%d, height:%d\n",
+            screen_num, screen_width, screen_height);
+
+     root_window = RootWindow(display, screen_num);
+     white_pixel = WhitePixel(display, screen_num);
+     black_pixel = BlackPixel(display, screen_num);
+
+     Window win;
+     int  win_width;
+     int  win_height;
+     int  win_x;
+     int  win_y;
+     int  win_border_width;
+     int  win_border_height;
+
+     int  width;
+     int  height;
+
+     win_x = win_y = win_border_width= win_border_height = 0;
+     win_width = DisplayWidth(display, screen_num);
+     win_height = DisplayHeight(display, screen_num);
+
+     width = (win_width / 3);
+     height = (win_height / 3);
+     win_border_width = 2;
+
+     /*å‰µå»ºä¸€å€‹çª—å£*/
+     win = XCreateSimpleWindow(
+             display,
+             RootWindow(display, screen_num),
+             win_x, win_y,
+             width, height,
+             win_border_width, win_border_height,
+             WhitePixel(display, screen_num)
+             );
+
+     /*è¨»å†Šäº‹ä»¶*/
+     /* XSelectInput(display, win, ExposureMask); */
+     /*ExposureMaskåœ¨é ­æ–‡ä»¶"Xh"ä¸­è¢«å®šç¾©ï¼Œå¦‚æœæˆ‘å€‘æƒ³è¨»å†Šæ›´å¤šçš„äº‹ä»¶é¡å‹ï¼Œæˆ‘å€‘å¯ä»¥ä½¿ç”¨é‚è¼¯"or"*/
+     XSelectInput(display, win,
+             ExposureMask | ButtonPressMask |
+             ButtonReleaseMask | ButtonPress |
+             ButtonRelease | EnterWindowMask |
+             LeaveWindowMask | EnterNotify |
+             LeaveNotify
+             );
+
+     /*é¼ æ¨™çš„é€²å…¥å’Œé›¢é–‹Enter Leaveå’ŒGTKå¾ˆåƒ.*/
+     XMapWindow(display, win);
+
+     /*ç•«ç­†*/
+     GC gc;
+     XGCValues values;
+     unsigned  long  valuemask = 0;
+     /* XGCValues?? values?? = CapButt | JoinBevel; */
+     /* unsigned long valuemask = GCCapStyle | GCJoinStyle; */
+     gc = XCreateGC(display, win, valuemask, &values);
+     XSync(display, False);
+     if  (gc < 0)
+     {
+          fprintf(stderr,  "XCreateGC:\n" );
+     }
+
+     /*ç•«ç•«.*/
+     XSetBackground(display, gc, WhitePixel(display, screen_num)); /*è¨­ç½®èƒŒæ™¯é¡è‰²*/
+     XSetForeground(display, gc, BlackPixel(display, screen_num)); /*è¨­ç½®å‰æ™¯è‰²*/
+     unsigned  int  line_width = 2;
+     int  line_style = LineSolid;
+     int  cap_style = CapButt;
+     int  join_style = JoinBevel;
+
+     XSetLineAttributes(display, gc, line_width, line_style, cap_style, join_style);
+     XSetFillStyle(display, gc, FillSolid);
+
+
+     XTextItem  item;
+     item.nchars = 2;
+     item.font = None;
+     item.chars = "B1";
+     item.delta = 0;
+
+     /* sleep(14); */
+     XEvent an_event;
+     /*äº‹ä»¶å¾ªç’°*/
+     while  (1)
+     {
+          XNextEvent(display, &an_event);
+
+          /*é€™è£¡å°±æ˜¯åˆ¤æ–·æ‰€æœ‰äº‹ä»¶*/
+          switch (an_event.type)
+          {
+
+              case  KeyPress:
+                  printf( "keyPress \n" );
+                  break ;
+              case  Expose:  /*é‡ç¹ª*/
+                  if (an_event.xexpose.count > 0){
+                      break ;
+                  }
+                  XDrawLine(display, win, gc, 0, 20, width, 20);
+                  XDrawPoint(display, win, gc, width/2, height/2 - 10);
+                  XDrawRectangle(display, win, gc, 100, 90, 50, 60);
+                  XFillRectangle(display, win, gc, 60, 50, 50, 60);
+                  /*åˆ·æ–°*/
+                  XFlush(display);
+                  printf( "Expose \n" );
+                  break ;
+              case  ButtonPress:  /*æŒ‰ä¸‹äº‹ä»¶*/
+                  /* int x; */
+                  /* int y; */
+                  /* x = an_event.xbutton.x; */
+                  /* y = an_event.xbutton.window; */
+                  int x;
+                  int y;
+                  x = an_event.xbutton.x;
+                  y = an_event.xbutton.y;
+                  XSetForeground(display, gc, white_pixel); /*è¨­ç½®å‰æ™¯è‰²*/
+                  XFillRectangle (display, win, gc, 0, 0, width, height);
+                  XSetForeground(display, gc, black_pixel); /*è¨­ç½®å‰æ™¯è‰²*/
+                  //srand( time(NULL) );
+                  //x = (rand() % (width-25))+25;
+                  //y = (rand() % (height-25)+25);
+                  switch (an_event.xbutton.button){
+                      case  Button1:
+                          printf( "Button1... x:%d, y%d \n",x ,y );
+                          item.chars = "B1";
+                          XDrawText(display, win, gc, x, y, &item, 1);
+                          XFlush(display);
+                          break ;
+                      case  Button2:
+                          printf( "Button2... x:%d, y%d \n",x ,y );
+                          item.chars = "B2";
+                          XDrawText(display, win, gc, x, y, &item, 1);
+                          XFlush(display);
+                          break ;
+                      case  Button3:
+                          printf( "Button3... x:%d, y%d \n",x ,y );
+                          item.chars = "B3";
+                          XDrawText(display, win, gc, x, y, &item, 1);
+                          XFlush(display);
+                          break ;
+                      case  Button4:
+                          printf( "Button4... x:%d, y%d \n",x ,y );
+                          item.chars = "B4";
+                          XDrawText(display, win, gc, x, y, &item, 1);
+                          XFlush(display);
+                          break ;
+                      case  Button5:
+                          printf( "Button5... x:%d, y%d \n",x ,y );
+                          item.chars = "B5";
+                          XDrawText(display, win, gc, x, y, &item, 1);
+                          XFlush(display);
+                          break ;
+                      default :
+                          break ;
+                  }
+          }
+
+     }
+     /*é—œé–‰Xæœå‹™å™¨é€£æ¥*/
+     XCloseDisplay(display);
+     return  0;
+}
